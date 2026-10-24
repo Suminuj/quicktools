@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#0b1020">
-<meta name="description" content="QuickTools PDF Studio: merge PDF files and extract pages directly in your browser. Free online PDF tools.">
+<meta name="description" content="Free online PDF tools: merge, compress, delete pages, sign, convert images and documents, and validate signatures.">
 <title>PDF Tools — QuickTools</title>
 <style>
 :root{color-scheme:dark;--bg:#0b1020;--panel:#141c30;--panel2:#19233a;--line:#2a3651;--text:#f4f7ff;--muted:#a7b3cc;--accent:#9a8cff;--green:#69e0b5;--danger:#ff9b9b}
@@ -15,13 +15,20 @@
 <body>
 <div class="wrap">
 <header class="top"><div class="logo">Q</div><div><div class="brand">QuickTools</div><div class="subbrand">Useful tools. One simple place.</div></div><a href="#pdf-tools">PDF Studio ↘</a></header>
-<section class="hero"><div class="eyebrow">QUICKTOOLS · PDF STUDIO</div><h1>Make PDFs work<br>for you.</h1><p>Merge documents or extract selected pages with simple tools that run in your browser.</p><div class="notice">🔒 <strong>Privacy first:</strong> selected files are processed in your browser and are not sent to a QuickTools server. Use copies of important documents and check the output before sharing.</div></section>
+<section class="hero"><div class="eyebrow">QUICKTOOLS · PDF STUDIO</div><h1>Make PDFs work<br>for you.</h1><p>Merge, compress, remove pages, sign, and convert documents with a growing collection of PDF utilities.</p><div class="notice">🔒 <strong>Privacy first:</strong> selected files are processed in your browser and are not sent to a QuickTools server. Use copies of important documents and check the output before sharing.</div></section>
 <h2 class="section-title" id="pdf-tools">PDF tools</h2>
 <div class="grid">
-<section class="card"><div class="ico">⇄</div><h2>Merge PDF files</h2><p>Combine two or more PDF documents into one file in the order you select them.</p><label class="filebox">Choose PDF files<input id="mergeFiles" type="file" accept="application/pdf,.pdf" multiple></label><div class="tool"><button class="btn" id="mergeBtn">Merge PDFs</button><div class="status" id="mergeStatus" aria-live="polite">Choose at least two PDF files to begin.</div></div></section>
-<section class="card"><div class="ico">✂</div><h2>Extract PDF pages</h2><p>Save specific pages as a new PDF. Example: 1,3,5-7.</p><label class="filebox">Choose one PDF<input id="extractFile" type="file" accept="application/pdf,.pdf"></label><label for="pages" class="small">Pages to extract</label><input id="pages" type="text" placeholder="Example: 1,3,5-7"><button class="btn" id="extractBtn">Extract pages</button><div class="status" id="extractStatus" aria-live="polite">Page numbers start at 1.</div></section>
-<section class="card"><div class="ico">↗</div><h2>More PDF tools</h2><p>We're building the next tools in stages, after testing these core features.</p><div class="small">Planned next: split by ranges, rotate pages, images to PDF, and PDF to images.</div><div class="notice">Coming next</div></section>
-</div>
+<section class="card"><div class="ico">⇄</div><h2>Merge PDF</h2><p>Combine two or more PDF documents into one file.</p><label class="filebox">Choose PDF files<input id="mergeFiles" type="file" accept="application/pdf,.pdf" multiple></label><div class="tool"><button class="btn" id="mergeBtn">Merge PDFs</button><div class="status" id="mergeStatus" aria-live="polite">Choose at least two PDF files.</div></div></section>
+<section class="card"><div class="ico">▣</div><h2>Compress PDF</h2><p>Reduce PDF file size for easier sharing. Compression options will be added next.</p><div class="small">Planned — compression quality needs testing to avoid damaging documents.</div><div class="notice">Coming next</div></section>
+<section class="card"><div class="ico">▤</div><h2>Delete PDF Pages</h2><p>Remove unwanted pages and save a new PDF.</p><label class="filebox">Choose PDF<input id="deleteFile" type="file" accept="application/pdf,.pdf"></label><label for="deletePages" class="small">Pages to remove (example: 2,4-5)</label><input id="deletePages" type="text" placeholder="2,4-5"><button class="btn" id="deleteBtn">Delete selected pages</button><div class="status" id="deleteStatus" aria-live="polite">Choose pages to remove.</div></section>
+<section class="card"><div class="ico">✍</div><h2>Sign PDF</h2><p>Add a simple typed signature to a PDF. Drawing and placement tools are planned.</p><div class="small">Planned — signing tools need careful positioning and preview.</div><div class="notice">Coming next</div></section>
+<section class="card"><div class="ico">⇩</div><h2>Strict PDF Compressor</h2><p>Prepare smaller PDFs for upload limits such as 50 KB, 100 KB or 200 KB.</p><div class="small">Planned — exact target sizes cannot be guaranteed for every document.</div><div class="notice">Coming next</div></section>
+<section class="card"><div class="ico">▧</div><h2>Image to PDF</h2><p>Turn JPG, PNG and other supported images into a PDF document.</p><div class="small">Planned — image selection and page-size options.</div><div class="notice">Coming next</div></section>
+<section class="card"><div class="ico">▧</div><h2>PDF to Image</h2><p>Export PDF pages as PNG or JPG images.</p><div class="small">Planned — requires a PDF rendering library.</div><div class="notice">Coming next</div></section>
+<section class="card"><div class="ico">W</div><h2>Word to PDF</h2><p>Convert DOC and DOCX files to PDF format.</p><div class="small">Planned — reliable conversion may require a server or a compatible browser library.</div><div class="notice">Coming next</div></section>
+<section class="card"><div class="ico">✓</div><h2>PDF Signature Validator</h2><p>Inspect digital-signature information in signed PDFs.</p><div class="small">Planned — signature validity depends on certificates and trust settings.</div><div class="notice">Coming next</div></section>
+<section class="card"><div class="ico">✂</div><h2>Extract PDF Pages</h2><p>Save selected pages as a new PDF. Example: 1,3,5-7.</p><label class="filebox">Choose one PDF<input id="extractFile" type="file" accept="application/pdf,.pdf"></label><label for="pages" class="small">Pages to extract</label><input id="pages" type="text" placeholder="Example: 1,3,5-7"><button class="btn" id="extractBtn">Extract pages</button><div class="status" id="extractStatus" aria-live="polite">Page numbers start at 1.</div></section>
+
 <footer>QuickTools · Free browser-based PDF utilities. This is an early version; verify files before relying on them.</footer>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
@@ -37,6 +44,18 @@ $('mergeBtn').addEventListener('click',async()=>{
  try{const merged=await PDFLib.PDFDocument.create();for(const file of files){const doc=await PDFLib.PDFDocument.load(await file.arrayBuffer());const pages=await merged.copyPages(doc,doc.getPageIndices());pages.forEach(p=>merged.addPage(p));}const bytes=await merged.save();savePdf(bytes,'quicktools-merged.pdf');setStatus('mergeStatus','Done! Your merged PDF download should begin shortly.','ok');}
  catch(e){setStatus('mergeStatus','Could not merge these files. They may be encrypted, damaged, or unsupported.','err');}
  finally{$('mergeBtn').disabled=false;}
+});
+$('deleteBtn').addEventListener('click',async()=>{
+ const file=$('deleteFile').files[0],raw=$('deletePages').value.trim();
+ if(!file){setStatus('deleteStatus','Please choose a PDF first.','err');return;}
+ if(!raw){setStatus('deleteStatus','Enter pages to remove, for example 2,4-5.','err');return;}
+ if(!window.PDFLib){setStatus('deleteStatus','PDF library did not load. Check your connection and refresh.','err');return;}
+ $('deleteBtn').disabled=true;setStatus('deleteStatus','Removing selected pages…');
+ try{const src=await PDFLib.PDFDocument.load(await file.arrayBuffer());const total=src.getPageCount();const remove=new Set();
+ for(const part of raw.split(',')){const m=part.trim().match(/^(\\d+)\\s*(?:-\\s*(\\d+))?$/);if(!m)throw new Error('format');const a=Number(m[1]),b=Number(m[2]||m[1]);if(a<1||b<a||b>total)throw new Error('range');for(let n=a;n<=b;n++)remove.add(n-1);}
+ if(remove.size>=total)throw new Error('all');const out=await PDFLib.PDFDocument.create();const keep=Array.from({length:total},(_,i)=>i).filter(i=>!remove.has(i));const pages=await out.copyPages(src,keep);pages.forEach(p=>out.addPage(p));const bytes=await out.save();savePdf(bytes,safeName(file.name)+'-pages-removed.pdf');setStatus('deleteStatus','Done! Removed '+remove.size+' page(s).','ok');
+ }catch(e){setStatus('deleteStatus',e.message==='range'?'Page number is outside the document range.':e.message==='all'?'You cannot remove every page; the output must contain at least one page.':'Invalid page format or unsupported PDF. Use 2,4-5.','err');}
+ finally{$('deleteBtn').disabled=false;}
 });
 $('extractBtn').addEventListener('click',async()=>{
  const file=$('extractFile').files[0],raw=$('pages').value.trim();if(!file){setStatus('extractStatus','Please choose a PDF first.','err');return;}if(!raw){setStatus('extractStatus','Enter page numbers, for example 1,3,5-7.','err');return;}if(!window.PDFLib){setStatus('extractStatus','PDF library did not load. Check your internet connection and refresh.','err');return;}
