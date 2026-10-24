@@ -19,7 +19,7 @@
 <h2 class="section-title" id="pdf-tools">PDF tools</h2>
 <div class="grid">
 <section class="card"><div class="ico">⇄</div><h2>Merge PDF</h2><p>Combine two or more PDF documents into one file.</p><label class="filebox">Choose PDF files<input id="mergeFiles" type="file" accept="application/pdf,.pdf" multiple></label><div class="tool"><button class="btn" id="mergeBtn">Merge PDFs</button><div class="status" id="mergeStatus" aria-live="polite">Choose at least two PDF files.</div></div></section>
-<section class="card"><div class="ico">▣</div><h2>Compress PDF</h2><p>Reduce PDF file size for easier sharing. Compression options will be added next.</p><div class="small">Planned — compression quality needs testing to avoid damaging documents.</div><div class="notice">Coming next</div></section>
+<section class="card"><div class="ico">▣</div><h2>Compress PDF</h2><p>Try safe PDF re-saving with compact object streams. Results depend on the PDF; scans and embedded images may not shrink much.</p><label class="filebox">Choose PDF<input id="compressFile" type="file" accept="application/pdf,.pdf"></label><button class="btn" id="compressBtn">Compress PDF</button><div class="status" id="compressStatus" aria-live="polite">Choose a PDF to start.</div><div class="small">Browser-based. This first version may not reduce every file's size.</div></section>
 <section class="card"><div class="ico">▤</div><h2>Delete PDF Pages</h2><p>Remove unwanted pages and save a new PDF.</p><label class="filebox">Choose PDF<input id="deleteFile" type="file" accept="application/pdf,.pdf"></label><label for="deletePages" class="small">Pages to remove (example: 2,4-5)</label><input id="deletePages" type="text" placeholder="2,4-5"><button class="btn" id="deleteBtn">Delete selected pages</button><div class="status" id="deleteStatus" aria-live="polite">Choose pages to remove.</div></section>
 <section class="card"><div class="ico">✍</div><h2>Sign PDF</h2><p>Add a simple typed signature to a PDF. Drawing and placement tools are planned.</p><div class="small">Planned — signing tools need careful positioning and preview.</div><div class="notice">Coming next</div></section>
 <section class="card"><div class="ico">⇩</div><h2>Strict PDF Compressor</h2><p>Prepare smaller PDFs for upload limits such as 50 KB, 100 KB or 200 KB.</p><div class="small">Planned — exact target sizes cannot be guaranteed for every document.</div><div class="notice">Coming next</div></section>
@@ -29,7 +29,7 @@
 <section class="card"><div class="ico">✓</div><h2>PDF Signature Validator</h2><p>Inspect digital-signature information in signed PDFs.</p><div class="small">Planned — signature validity depends on certificates and trust settings.</div><div class="notice">Coming next</div></section>
 <section class="card"><div class="ico">✂</div><h2>Extract PDF Pages</h2><p>Save selected pages as a new PDF. Example: 1,3,5-7.</p><label class="filebox">Choose one PDF<input id="extractFile" type="file" accept="application/pdf,.pdf"></label><label for="pages" class="small">Pages to extract</label><input id="pages" type="text" placeholder="Example: 1,3,5-7"><button class="btn" id="extractBtn">Extract pages</button><div class="status" id="extractStatus" aria-live="polite">Page numbers start at 1.</div></section>
 
-<footer>QuickTools · Free browser-based PDF utilities. This is an early version; verify files before relying on them.</footer>
+</div>\n<footer>QuickTools · Free browser-based PDF utilities. This is an early version; verify files before relying on them.</footer>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <script>
@@ -37,6 +37,23 @@ const $=id=>document.getElementById(id);
 function setStatus(id,msg,type=''){const el=$(id);el.textContent=msg;el.className='status '+type;}
 function savePdf(bytes,name){const blob=new Blob([bytes],{type:'application/pdf'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);}
 function safeName(name){return name.replace(/\.pdf$/i,'').replace(/[^a-z0-9_-]+/gi,'_').slice(0,60)||'quicktools';}
+$('compressBtn').addEventListener('click',async()=>{
+ const file=$('compressFile').files[0];
+ if(!file){setStatus('compressStatus','Please choose a PDF first.','err');return;}
+ if(!window.PDFLib){setStatus('compressStatus','PDF library did not load. Check your internet connection and refresh.','err');return;}
+ $('compressBtn').disabled=true;setStatus('compressStatus','Optimizing PDF structure… keep this page open.');
+ try{
+  const original=await file.arrayBuffer();
+  const doc=await PDFLib.PDFDocument.load(original);
+  const bytes=await doc.save({useObjectStreams:true,addDefaultPage:false});
+  savePdf(bytes,safeName(file.name)+'-optimized.pdf');
+  const before=(file.size/1024).toFixed(1),after=(bytes.length/1024).toFixed(1);
+  const diff=Math.round((1-bytes.length/file.size)*100);
+  if(bytes.length<file.size){setStatus('compressStatus','Finished: '+before+' KB → '+after+' KB ('+diff+'% smaller). Download should begin shortly.','ok');}
+  else{setStatus('compressStatus','Finished, but this PDF did not get smaller ('+before+' KB → '+after+' KB). The optimized copy was downloaded anyway; keep the original if it is smaller.','err');}
+ }catch(e){setStatus('compressStatus','Could not process this PDF. It may be damaged, encrypted, or unsupported.','err');}
+ finally{$('compressBtn').disabled=false;}
+});
 $('mergeBtn').addEventListener('click',async()=>{
  const files=Array.from($('mergeFiles').files||[]);if(files.length<2){setStatus('mergeStatus','Please choose at least two PDF files.','err');return;}
  if(!window.PDFLib){setStatus('mergeStatus','PDF library did not load. Check your internet connection and refresh.','err');return;}
