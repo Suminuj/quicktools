@@ -24,7 +24,7 @@
 <section class="card"><div class="ico">✍</div><h2>Sign PDF</h2><p>Add a simple typed signature to a PDF. Drawing and placement tools are planned.</p><div class="small">Planned — signing tools need careful positioning and preview.</div><div class="notice">Coming next</div></section>
 <section class="card"><div class="ico">⇩</div><h2>Strict PDF Compressor</h2><p>Prepare smaller PDFs for upload limits such as 50 KB, 100 KB or 200 KB.</p><div class="small">Planned — exact target sizes cannot be guaranteed for every document.</div><div class="notice">Coming next</div></section>
 <section class="card"><div class="ico">▧</div><h2>Image to PDF</h2><p>Turn JPG, PNG and other supported images into a PDF document.</p><div class="small">Planned — image selection and page-size options.</div><div class="notice">Coming next</div></section>
-<section class="card"><div class="ico">▧</div><h2>PDF to Image</h2><p>Export PDF pages as PNG or JPG images.</p><div class="small">Planned — requires a PDF rendering library.</div><div class="notice">Coming next</div></section>
+<section class="card"><div class="ico">▧</div><h2>PDF to Image</h2><p>Convert every page of a PDF into PNG images and download them together in a ZIP file.</p><label class="filebox">Choose PDF<input id="pdfImageFile" type="file" accept="application/pdf,.pdf"></label><label class="small" for="pdfImageFormat">Image format</label><select id="pdfImageFormat" style="width:100%;padding:12px;border:1px solid var(--line);background:#0d1425;color:var(--text);border-radius:10px;margin:8px 0 12px"><option value="png">PNG — clearer text</option><option value="jpeg">JPG — smaller images</option></select><button class="btn" id="pdfImageBtn">Convert PDF to images</button><div class="status" id="pdfImageStatus" aria-live="polite">Choose a PDF to start.</div><div class="small">Pages are rendered in your browser. Large PDFs may take time and memory.</div></section>
 <section class="card"><div class="ico">W</div><h2>Word to PDF</h2><p>Convert DOC and DOCX files to PDF format.</p><div class="small">Planned — reliable conversion may require a server or a compatible browser library.</div><div class="notice">Coming next</div></section>
 <section class="card"><div class="ico">✓</div><h2>PDF Signature Validator</h2><p>Inspect digital-signature information in signed PDFs.</p><div class="small">Planned — signature validity depends on certificates and trust settings.</div><div class="notice">Coming next</div></section>
 <section class="card"><div class="ico">✂</div><h2>Extract PDF Pages</h2><p>Save selected pages as a new PDF. Example: 1,3,5-7.</p><label class="filebox">Choose one PDF<input id="extractFile" type="file" accept="application/pdf,.pdf"></label><label for="pages" class="small">Pages to extract</label><input id="pages" type="text" placeholder="Example: 1,3,5-7"><button class="btn" id="extractBtn">Extract pages</button><div class="status" id="extractStatus" aria-live="polite">Page numbers start at 1.</div></section>
@@ -32,11 +32,39 @@
 </div>\n<footer>QuickTools · Free browser-based PDF utilities. This is an early version; verify files before relying on them.</footer>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>
 const $=id=>document.getElementById(id);
 function setStatus(id,msg,type=''){const el=$(id);el.textContent=msg;el.className='status '+type;}
 function savePdf(bytes,name){const blob=new Blob([bytes],{type:'application/pdf'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);}
 function safeName(name){return name.replace(/\.pdf$/i,'').replace(/[^a-z0-9_-]+/gi,'_').slice(0,60)||'quicktools';}
+$('pdfImageBtn').addEventListener('click',async()=>{
+ const file=$('pdfImageFile').files[0],format=$('pdfImageFormat').value;
+ if(!file){setStatus('pdfImageStatus','Please choose a PDF first.','err');return;}
+ if(!window.pdfjsLib||!window.JSZip){setStatus('pdfImageStatus','The conversion libraries did not load. Check your internet connection and refresh.','err');return;}
+ $('pdfImageBtn').disabled=true;setStatus('pdfImageStatus','Loading PDF…');
+ try{
+  pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  const data=new Uint8Array(await file.arrayBuffer());
+  const pdf=await pdfjsLib.getDocument({data}).promise;
+  const zip=new JSZip(),folder=zip.folder(safeName(file.name)+'-images');
+  for(let n=1;n<=pdf.numPages;n++){
+   setStatus('pdfImageStatus','Rendering page '+n+' of '+pdf.numPages+'…');
+   const page=await pdf.getPage(n),viewport=page.getViewport({scale:1.5});
+   const canvas=document.createElement('canvas');canvas.width=Math.ceil(viewport.width);canvas.height=Math.ceil(viewport.height);
+   const ctx=canvas.getContext('2d');await page.render({canvasContext:ctx,viewport}).promise;
+   const blob=await new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(new Error('image')),'image/'+format,0.9));
+   folder.file('page-'+String(n).padStart(3,'0')+'.'+(format==='jpeg'?'jpg':'png'),blob);
+   canvas.width=0;canvas.height=0;
+  }
+  setStatus('pdfImageStatus','Packing '+pdf.numPages+' image(s) into a ZIP file…');
+  const zipped=await zip.generateAsync({type:'blob'});
+  const url=URL.createObjectURL(zipped),a=document.createElement('a');a.href=url;a.download=safeName(file.name)+'-images.zip';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);
+  setStatus('pdfImageStatus','Success! Downloaded '+pdf.numPages+' page image(s) in a ZIP file.','ok');
+ }catch(e){setStatus('pdfImageStatus','Could not convert this PDF. It may be damaged, encrypted, too large, or unsupported.','err');}
+ finally{$('pdfImageBtn').disabled=false;}
+});
 $('compressBtn').addEventListener('click',async()=>{
  const file=$('compressFile').files[0];
  if(!file){setStatus('compressStatus','Please choose a PDF first.','err');return;}
