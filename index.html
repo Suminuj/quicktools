@@ -23,7 +23,7 @@
 <section class="card"><div class="ico">▤</div><h2>Delete PDF Pages</h2><p>Remove unwanted pages and save a new PDF.</p><label class="filebox">Choose PDF<input id="deleteFile" type="file" accept="application/pdf,.pdf"></label><label for="deletePages" class="small">Pages to remove (example: 2,4-5)</label><input id="deletePages" type="text" placeholder="2,4-5"><button class="btn" id="deleteBtn">Delete selected pages</button><div class="status" id="deleteStatus" aria-live="polite">Choose pages to remove.</div></section>
 <section class="card"><div class="ico">✍</div><h2>Sign PDF</h2><p>Add a simple typed signature to a PDF. Drawing and placement tools are planned.</p><div class="small">Planned — signing tools need careful positioning and preview.</div><div class="notice">Coming next</div></section>
 <section class="card"><div class="ico">⇩</div><h2>Strict PDF Compressor</h2><p>Prepare smaller PDFs for upload limits such as 50 KB, 100 KB or 200 KB.</p><div class="small">Planned — exact target sizes cannot be guaranteed for every document.</div><div class="notice">Coming next</div></section>
-<section class="card"><div class="ico">▧</div><h2>Image to PDF</h2><p>Turn JPG, PNG and other supported images into a PDF document.</p><div class="small">Planned — image selection and page-size options.</div><div class="notice">Coming next</div></section>
+<section class="card"><div class="ico">▧</div><h2>Image to PDF</h2><p>Combine JPG and PNG images into one PDF, with one image per page.</p><label class="filebox">Choose images<input id="imageToPdfFiles" type="file" accept="image/jpeg,image/png,.jpg,.jpeg,.png" multiple></label><div class="small">Tip: select images in the order you want them to appear.</div><button class="btn" id="imageToPdfBtn">Convert images to PDF</button><div class="status" id="imageToPdfStatus" aria-live="polite">Choose one or more JPG or PNG images.</div></section>
 <section class="card"><div class="ico">▧</div><h2>PDF to Image</h2><p>Convert every page of a PDF into PNG images and download them together in a ZIP file.</p><label class="filebox">Choose PDF<input id="pdfImageFile" type="file" accept="application/pdf,.pdf"></label><label class="small" for="pdfImageFormat">Image format</label><select id="pdfImageFormat" style="width:100%;padding:12px;border:1px solid var(--line);background:#0d1425;color:var(--text);border-radius:10px;margin:8px 0 12px"><option value="png">PNG — clearer text</option><option value="jpeg">JPG — smaller images</option></select><button class="btn" id="pdfImageBtn">Convert PDF to images</button><div class="status" id="pdfImageStatus" aria-live="polite">Choose a PDF to start.</div><div class="small">Pages are rendered in your browser. Large PDFs may take time and memory.</div></section>
 <section class="card"><div class="ico">W</div><h2>Word to PDF</h2><p>Convert DOC and DOCX files to PDF format.</p><div class="small">Planned — reliable conversion may require a server or a compatible browser library.</div><div class="notice">Coming next</div></section>
 <section class="card"><div class="ico">✓</div><h2>PDF Signature Validator</h2><p>Inspect digital-signature information in signed PDFs.</p><div class="small">Planned — signature validity depends on certificates and trust settings.</div><div class="notice">Coming next</div></section>
@@ -39,6 +39,30 @@ const $=id=>document.getElementById(id);
 function setStatus(id,msg,type=''){const el=$(id);el.textContent=msg;el.className='status '+type;}
 function savePdf(bytes,name){const blob=new Blob([bytes],{type:'application/pdf'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);}
 function safeName(name){return name.replace(/\.pdf$/i,'').replace(/[^a-z0-9_-]+/gi,'_').slice(0,60)||'quicktools';}
+$('imageToPdfBtn').addEventListener('click',async()=>{
+ const files=Array.from($('imageToPdfFiles').files||[]);
+ if(!files.length){setStatus('imageToPdfStatus','Please choose at least one JPG or PNG image.','err');return;}
+ if(!window.PDFLib){setStatus('imageToPdfStatus','PDF library did not load. Check your internet connection and refresh.','err');return;}
+ $('imageToPdfBtn').disabled=true;setStatus('imageToPdfStatus','Creating PDF…');
+ try{
+  const doc=await PDFLib.PDFDocument.create();
+  const pageW=595.28,pageH=841.89,margin=24;
+  for(let i=0;i<files.length;i++){
+   const file=files[i];setStatus('imageToPdfStatus','Adding image '+(i+1)+' of '+files.length+'…');
+   const data=await file.arrayBuffer();let img;
+   if(file.type==='image/png'||/\.png$/i.test(file.name)){img=await doc.embedPng(data);}
+   else if(file.type==='image/jpeg'||/\.jpe?g$/i.test(file.name)){img=await doc.embedJpg(data);}
+   else{throw new Error('format');}
+   const scale=Math.min((pageW-margin*2)/img.width,(pageH-margin*2)/img.height);
+   const w=img.width*scale,h=img.height*scale;
+   const page=doc.addPage([pageW,pageH]);
+   page.drawImage(img,{x:(pageW-w)/2,y:(pageH-h)/2,width:w,height:h});
+  }
+  const bytes=await doc.save();savePdf(bytes,'quicktools-images.pdf');
+  setStatus('imageToPdfStatus','Success! Combined '+files.length+' image(s) into one PDF.','ok');
+ }catch(e){setStatus('imageToPdfStatus',e.message==='format'?'Please use JPG or PNG images only.':'Could not convert these images. Try smaller JPG or PNG files.','err');}
+ finally{$('imageToPdfBtn').disabled=false;}
+});
 $('pdfImageBtn').addEventListener('click',async()=>{
  const file=$('pdfImageFile').files[0],format=$('pdfImageFormat').value;
  if(!file){setStatus('pdfImageStatus','Please choose a PDF first.','err');return;}
