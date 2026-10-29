@@ -21,7 +21,7 @@
 <body>
 <div class="wrap">
 <header class="top"><div class="logo">Q</div><div><div class="brand">QuickTools</div><div class="subbrand">Useful tools. One simple place.</div></div><a href="#tool-navigation">Explore tools ↘</a></header>
-<nav id="tool-navigation" class="tool-nav" aria-label="Tool categories"><a href="#pdf-tools">PDF</a><a href="#image-tools">Images</a><a href="#govt-photo-tools">Govt Photos</a><a href="#calculator-tools">Calculators</a><a href="#text-tools">Text</a></nav>
+<nav id="tool-navigation" class="tool-nav" aria-label="Tool categories"><a href="#pdf-tools">PDF</a><a href="#image-tools">Images</a><a href="#govt-photo-tools">Govt Photos</a><a href="#calculator-tools">Calculators</a><a href="#cash-denomination-tool">Cash Count</a><a href="#text-tools">Text</a></nav>
 <section class="quick-access"><h2>My QuickTools</h2><p class="small">Favorites and recently used tools are saved on this device.</p><div><strong>Favorites</strong><div id="favoriteTools" class="quick-links">No favorites yet. Tap ☆ on a tool.</div></div><div style="margin-top:12px"><strong>Recently used</strong><div id="recentTools" class="quick-links">Tools you use will appear here.</div></div></section>
 <section class="hero"><div class="eyebrow">QUICKTOOLS · PDF STUDIO</div><h1>Make PDFs work<br>for you.</h1><p>Merge, compress, remove pages, sign, and convert documents with a growing collection of PDF utilities.</p><div class="notice">🔒 <strong>Privacy first:</strong> selected files are processed in your browser and are not sent to a QuickTools server. Use copies of important documents and check the output before sharing.</div></section>
 <h2 class="section-title" id="pdf-tools">PDF tools</h2>
@@ -67,6 +67,8 @@
 <p class="small">Useful everyday calculators that run in your browser.</p>
 <label class="filebox" for="calcSearch" style="margin:12px 0 18px">Search calculators<input id="calcSearch" type="search" placeholder="Search loan, EMI, percentage…" style="margin-top:9px"></label>
 <div class="grid" id="calculatorGrid">
+<section class="card" id="cash-denomination-tool" data-tool-name="Cash Denomination Calculator"><div class="ico">₹</div><h2>Cash Denomination Calculator</h2><p>Count Indian currency notes and coins, see subtotals, and calculate the total cash amount.</p><div class="cash-denom-table" style="display:grid;grid-template-columns:minmax(72px,1fr) minmax(74px,1.1fr) minmax(86px,1.2fr);gap:7px;align-items:center;font-size:12px"><strong>Value</strong><strong>Quantity</strong><strong>Amount</strong><div>₹500</div><input aria-label="Number of ₹500 notes" type="number" min="0" step="1" value="0" data-cash-denom="500"><output data-cash-total="500">₹0</output><div>₹200</div><input aria-label="Number of ₹200 notes" type="number" min="0" step="1" value="0" data-cash-denom="200"><output data-cash-total="200">₹0</output><div>₹100</div><input aria-label="Number of ₹100 notes" type="number" min="0" step="1" value="0" data-cash-denom="100"><output data-cash-total="100">₹0</output><div>₹50</div><input aria-label="Number of ₹50 notes" type="number" min="0" step="1" value="0" data-cash-denom="50"><output data-cash-total="50">₹0</output><div>₹20</div><input aria-label="Number of ₹20 notes" type="number" min="0" step="1" value="0" data-cash-denom="20"><output data-cash-total="20">₹0</output><div>₹10</div><input aria-label="Number of ₹10 notes or coins" type="number" min="0" step="1" value="0" data-cash-denom="10"><output data-cash-total="10">₹0</output><div>₹5</div><input aria-label="Number of ₹5 coins" type="number" min="0" step="1" value="0" data-cash-denom="5"><output data-cash-total="5">₹0</output><div>₹2</div><input aria-label="Number of ₹2 coins" type="number" min="0" step="1" value="0" data-cash-denom="2"><output data-cash-total="2">₹0</output><div>₹1</div><input aria-label="Number of ₹1 coins" type="number" min="0" step="1" value="0" data-cash-denom="1"><output data-cash-total="1">₹0</output></div><div style="margin-top:18px;padding:14px;background:#10182a;border:1px solid var(--line);border-radius:12px"><div class="small">TOTAL CASH</div><div id="cashDenomGrandTotal" style="font-size:clamp(27px,5vw,36px);font-weight:800;color:var(--green);margin:4px 0">₹0</div><div class="small" id="cashDenomCount">Total notes and coins: 0</div></div><button class="btn" type="button" id="cashDenomCopy" style="margin-top:12px">Copy cash count</button><button class="btn secondary" type="button" id="cashDenomReset">Reset quantities</button><div class="status" id="cashDenomStatus" aria-live="polite">Enter the number of notes or coins; totals update automatically.</div><div class="small">For counting only. This tool does not store your cash details or send them to a server.</div></section>
+
 <section class="card"><div class="ico">₹</div><h2>EMI Calculator</h2><p>Estimate monthly loan EMI, total payment, and interest.</p><label class="small" for="emiPrincipal">Loan amount (₹)</label><input id="emiPrincipal" type="number" min="1" value="500000"><label class="small" for="emiRate">Annual interest rate (%)</label><input id="emiRate" type="number" min="0" step="0.1" value="10"><label class="small" for="emiMonths">Loan term (months)</label><input id="emiMonths" type="number" min="1" value="60"><button class="btn" id="emiBtn">Calculate EMI</button><div class="status" id="emiStatus" aria-live="polite">Enter your loan details.</div></section>
 <section class="card"><div class="ico">％</div><h2>Percentage Calculator</h2><p>Calculate what percent one number is of another.</p><label class="small" for="pctPart">Part</label><input id="pctPart" type="number" value="25"><label class="small" for="pctWhole">Total</label><input id="pctWhole" type="number" value="200"><button class="btn" id="pctBtn">Calculate percentage</button><div class="status" id="pctStatus" aria-live="polite">Example: 25 out of 200 = 12.5%.</div></section>
 <section class="card"><div class="ico">＋</div><h2>GST Calculator</h2><p>Calculate GST amount and total price from a base amount.</p><label class="small" for="gstBase">Base amount (₹)</label><input id="gstBase" type="number" min="0" value="1000"><label class="small" for="gstRate">GST rate (%)</label><select id="gstRate" style="width:100%;padding:12px;border:1px solid var(--line);background:#0d1425;color:var(--text);border-radius:10px;margin:8px 0 12px"><option value="5">5%</option><option value="12">12%</option><option value="18" selected>18%</option><option value="28">28%</option></select><button class="btn" id="gstBtn">Calculate GST</button><div class="status" id="gstStatus" aria-live="polite">Enter a base amount.</div></section>
@@ -381,6 +383,44 @@ $('extractBtn').addEventListener('click',async()=>{
  catch(e){setStatus('extractStatus',e.message==='range'?'Page range is invalid. Enter numbers from 1 to the number of pages in your PDF.':'Invalid page format or unsupported PDF. Try a format like 1,3,5-7.','err');}
  finally{$('extractBtn').disabled=false;}
 });
+
+const cashDenomMoney = n => '₹' + Math.round(n).toLocaleString('en-IN');
+function updateCashDenomination(){
+ const inputs=[...document.querySelectorAll('[data-cash-denom]')];
+ let grand=0,count=0;
+ inputs.forEach(input=>{
+   const quantity=Number(input.value);
+   const safe=Number.isFinite(quantity)&&Number.isInteger(quantity)&&quantity>=0?quantity:0;
+   const denom=Number(input.dataset.cashDenom);
+   const amount=denom*safe;grand+=amount;count+=safe;
+   const output=document.querySelector('[data-cash-total="'+denom+'"]');
+   if(output)output.textContent=cashDenomMoney(amount);
+ });
+ const totalEl=document.getElementById('cashDenomGrandTotal');
+ const countEl=document.getElementById('cashDenomCount');
+ if(totalEl)totalEl.textContent=cashDenomMoney(grand);
+ if(countEl)countEl.textContent='Total notes and coins: '+count.toLocaleString('en-IN');
+ return {grand,count};
+}
+document.querySelectorAll('[data-cash-denom]').forEach(input=>input.addEventListener('input',updateCashDenomination));
+document.getElementById('cashDenomReset')?.addEventListener('click',()=>{
+ document.querySelectorAll('[data-cash-denom]').forEach(input=>input.value='0');
+ updateCashDenomination();
+ const s=document.getElementById('cashDenomStatus');if(s){s.className='status';s.textContent='All quantities reset.';}
+});
+document.getElementById('cashDenomCopy')?.addEventListener('click',async()=>{
+ const result=updateCashDenomination();
+ const rows=[...document.querySelectorAll('[data-cash-denom]')].map(input=>{
+  const d=Number(input.dataset.cashDenom),q=Number(input.value)||0;
+  return '₹'+d+' × '+q+' = '+cashDenomMoney(d*q);
+ });
+ const report=['Cash Denomination Summary',...rows,'Total notes and coins: '+result.count,'TOTAL CASH: '+cashDenomMoney(result.grand)].join('\n');
+ const status=document.getElementById('cashDenomStatus');
+ try{await navigator.clipboard.writeText(report);if(status){status.className='status ok';status.textContent='Cash count copied to clipboard.';}}
+ catch(e){if(status){status.className='status err';status.textContent='Clipboard access is unavailable. You can select and copy the displayed totals manually.';}}
+});
+updateCashDenomination();
+
 </script>
 </body>
 </html>
