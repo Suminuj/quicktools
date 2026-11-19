@@ -1,0 +1,8 @@
+{
+  "appId": "com.sumin.checkmate",
+  "appName": "Checkmate Chess",
+  "webDir": "dist",
+  "android": {
+    "allowMixedContent": false
+  }
+}
