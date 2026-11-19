@@ -196,3 +196,7 @@ $('undo').onclick = () => {
   selected = null; render();
 };
 render();
+
+if ('serviceWorker' in navigator && !location.protocol.startsWith('capacitor')) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+}
