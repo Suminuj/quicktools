@@ -1,0 +1,36 @@
+name: Build Checkmate Chess APK
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "checkmate-chess/**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+      - name: Build debug APK
+        run: |
+          if [ -f checkmate-chess/gradlew ]; then
+            cd checkmate-chess
+            chmod +x ./gradlew
+            ./gradlew assembleDebug
+          else
+            echo "Android Gradle project not yet added."
+            exit 1
+          fi
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: checkmate-chess-debug-apk
+          path: checkmate-chess/app/build/outputs/apk/debug/*.apk
